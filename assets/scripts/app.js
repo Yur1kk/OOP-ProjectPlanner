@@ -12,16 +12,53 @@ class DOMHelper {
   }
 }
 
-class Tooltip {}
+class Tooltip {
+  constructor(closeNotifierFunction) {
+    this.closeNotifier = closeNotifierFunction;
+  }
+  closeToolTip() {
+    this.remove();
+    this.closeNotifier();
+  }
+  remove() {
+    this.element.remove();
+  }
+  show() {
+    const tooltipElement = document.createElement('div');
+    tooltipElement.className = 'card';
+    tooltipElement.textContent = 'Some description...';
+    tooltipElement.addEventListener('click', this.closeToolTip.bind(this));
+    this.element = tooltipElement;
+    document.body.append(tooltipElement);
+  }
+}
 
 class ProjectItem {
+  hasActiveToolTip = false;
+
   constructor(id, updateProjectListsFunction, type) {
     this.id = id;
     this.updateProjectListsHandler = updateProjectListsFunction;
     this.connectMoreInfoButton();
     this.connectSwitchButton(type);
   }
-  connectMoreInfoButton() {}
+
+  showMoreInfoHandler() {
+    if (this.hasActiveToolTip) {
+      return;
+    }
+    const tooltip = new Tooltip(() => {
+      this.hasActiveToolTip = false;
+    });
+    tooltip.show();
+    this.hasActiveToolTip = true;
+  }
+
+  connectMoreInfoButton() {
+    const projectItemElement = document.getElementById(this.id);
+    const moreInfoBtn = projectItemElement.querySelector('button:first-of-type');
+    moreInfoBtn.addEventListener('click', this.showMoreInfoHandler)
+  }
   connectSwitchButton(type) {
     const projectItemElement = document.getElementById(this.id);
     let switchBtn = projectItemElement.querySelector("button:last-of-type");
