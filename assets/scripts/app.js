@@ -35,8 +35,8 @@ class Component {
 }
 
 class Tooltip extends Component {
-  constructor(closeNotifierFunction, text) {
-    super();
+  constructor(closeNotifierFunction, text, hostElementId) {
+    super(hostElementId);
     this.closeNotifier = closeNotifierFunction;
     this.text = text;
     this.create();
@@ -72,7 +72,7 @@ class ProjectItem {
     const tooltipText = projectELement.dataset.extraInfo;
     const tooltip = new Tooltip(() => {
       this.hasActiveToolTip = false;
-    }, tooltipText);
+    }, tooltipText, this.id);
     tooltip.show();
     this.hasActiveToolTip = true;
   }
