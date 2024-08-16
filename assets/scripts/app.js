@@ -12,24 +12,44 @@ class DOMHelper {
   }
 }
 
-class Tooltip {
+class Component {
+  constructor(hostElementId, insertBefore = false) {
+    if (hostElementId) {
+      this.hostElement = document.getElementById(hostElementId);
+    } else {
+      this.hostElement = document.body;
+    }
+    this.insertBefore = insertBefore;
+  }
+  remove() {
+    if (this.element) {
+      this.element.remove();
+    }
+  }
+  show() {
+    this.hostElement.insertAdjacentElement(
+      this.insertBefore ? "afterbegin" : "beforeend",
+      this.element
+    );
+  }
+}
+
+class Tooltip extends Component {
   constructor(closeNotifierFunction) {
+    super();
     this.closeNotifier = closeNotifierFunction;
+    this.create();
   }
   closeToolTip() {
     this.remove();
     this.closeNotifier();
   }
-  remove() {
-    this.element.remove();
-  }
-  show() {
-    const tooltipElement = document.createElement('div');
-    tooltipElement.className = 'card';
-    tooltipElement.textContent = 'Some description...';
-    tooltipElement.addEventListener('click', this.closeToolTip.bind(this));
+  create() {
+    const tooltipElement = document.createElement("div");
+    tooltipElement.className = "card";
+    tooltipElement.textContent = "Some description...";
+    tooltipElement.addEventListener("click", this.closeToolTip.bind(this));
     this.element = tooltipElement;
-    document.body.append(tooltipElement);
   }
 }
 
@@ -56,8 +76,10 @@ class ProjectItem {
 
   connectMoreInfoButton() {
     const projectItemElement = document.getElementById(this.id);
-    const moreInfoBtn = projectItemElement.querySelector('button:first-of-type');
-    moreInfoBtn.addEventListener('click', this.showMoreInfoHandler)
+    const moreInfoBtn = projectItemElement.querySelector(
+      "button:first-of-type"
+    );
+    moreInfoBtn.addEventListener("click", this.showMoreInfoHandler);
   }
   connectSwitchButton(type) {
     const projectItemElement = document.getElementById(this.id);
