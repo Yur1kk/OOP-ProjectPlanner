@@ -143,8 +143,7 @@ class ProjectList {
     });
 
     list.addEventListener("dragleave", (event) => {
-      if (event.relatedTarget.closest(`#${this.type}-projects ul`) !== list);
-      {
+      if (event.relatedTarget.closest(`#${this.type}-projects ul`) !== list) {
         list.parentElement.classList.remove("droppable");
       }
     });
